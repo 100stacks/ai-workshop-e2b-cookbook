@@ -21,7 +21,7 @@ export async function POST(req: Request) {
   const { messages, userID }: { messages: CoreMessage[], userID: string } = await req.json()
   console.log('userID', userID)
 
-  let data: StreamData = new StreamData()
+  let data: StreamData = new StreamData() // Side-View code view
 
   const result = await streamText({
     model: anthropic('claude-3-5-sonnet-20240620'),
@@ -34,27 +34,28 @@ export async function POST(req: Request) {
           code: z.string().describe('The code to run.'),
         }),
         async execute({ code }) {
-          data.append({
-            tool: 'runPython',
-            state: 'running',
-          })
+          const result = await runPython(userID, code)
+          // data.append({
+          //   tool: 'runPython',
+          //   state: 'running',
+          // })
 
           const execOutput = await runPython(userID, code)
           const stdout = execOutput.logs.stdout
           const stderr = execOutput.logs.stderr
           const runtimeError = execOutput.error
-          const results = execOutput.results
+          const cellResults = execOutput.results
 
-          data.append({
-            tool: 'runPython',
-            state: 'complete',
-          })
+          // data.append({
+          //   tool: 'runPython',
+          //   state: 'complete',
+          // })
 
           return {
             stdout,
             stderr,
             runtimeError,
-            cellResults: results,
+            cellResults: cellResults,
           }
         },
       }),
