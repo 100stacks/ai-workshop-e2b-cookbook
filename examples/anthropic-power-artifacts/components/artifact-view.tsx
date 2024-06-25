@@ -73,8 +73,8 @@ export function ArtifactView({
           <Image
             src={`data:image/png;base64,${imgInBase64}`}
             alt="result"
-            width={600}
-            height={400}
+            width={600} // arbitrary value for the demo
+            height={400} // arbitrary value for the demo
           />
         </div>
         <LogsOutput stdout={stdout} stderr={stderr} />
